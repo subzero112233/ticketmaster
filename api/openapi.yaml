@@ -1,0 +1,249 @@
+openapi: "3.0.0"
+info:
+    title: "ticketmaster"
+    description: |
+        Specification for some service.
+    version: "0.0.1"
+    contact:
+        name: "Reshef Sharvit"
+        email: "reshefsharvit21@gmail.com"
+paths:
+    /users:
+        summary: "create a user"
+        post:
+            operationId: "create-user"
+            summary: "create a user"
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/User"
+            responses:
+                '201':
+                    description: |
+                        Request processed successfully
+                'default':
+                    description: |
+                        Operation failed.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorOutput"
+    /events:
+        summary: "get all events"
+        get:
+            operationId: "get-all-events"
+            summary: "get all events"
+            responses:
+                '200':
+                    description: |
+                        Request processed successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: "array"
+                                items:
+                                    $ref: "#/components/schemas/Event"
+                'default':
+                    description: |
+                        Operation failed.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorOutput"
+    /events/{event_id}:
+        summary: "get event by id"
+        get:
+            operationId: "get-event"
+            summary: "get event by id"
+            parameters:
+                - name: "event_id"
+                  in: "path"
+                  required: true
+                  schema:
+                      type: "string"
+            responses:
+                '200':
+                    description: |
+                        Request processed successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Event"
+                'default':
+                    description: |
+                        Operation failed.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorOutput"
+    /events/search:
+        summary: "search events"
+        get:
+            operationId: "search-events"
+            summary: "search events"
+            parameters:
+                - name: "performer"
+                  in: "query"
+                  schema:
+                      type: "string"
+                - name: "location"
+                  in: "query"
+                  schema:
+                      type: "string"
+                - name: "description"
+                  in: "query"
+                  schema:
+                      type: "string"
+                - name: "from_date"
+                  in: "query"
+                  schema:
+                      type: "string"
+                      format: "date-time"
+                - name: "to_date"
+                  in: "query"
+                  schema:
+                      type: "string"
+                      format: "date-time"
+                - name: "page"
+                  in: "query"
+                  schema:
+                      type: "integer"
+                      default: 1
+                      minimum: 1
+            responses:
+                '200':
+                    description: |
+                        Request processed successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Event"
+                'default':
+                    description: |
+                        Operation failed.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorOutput"
+    /events/{event_id}/tickets:
+        summary: "get available tickets to event by id"
+        get:
+            operationId: "get-available-tickets-for-event"
+            summary: "get available tickets for event by id"
+            parameters:
+                - name: "event_id"
+                  in: "path"
+                  required: true
+                  schema:
+                      type: "string"
+            responses:
+                '200':
+                    description: |
+                        Request processed successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/Ticket"
+                'default':
+                    description: |
+                        Operation failed.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorOutput"
+    /reservations:
+        summary: "reserve a ticket(s) to an event"
+        post:
+            operationId: "place-reservation"
+            summary: "place reservation"
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Reservation"
+            responses:
+                '201':
+                    description: |
+                        Request processed successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Reservation"
+                'default':
+                    description: |
+                        Operation failed.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorOutput"
+components:
+    schemas:
+        ErrorOutput:
+            type: "object"
+            required: [ "message" ]
+            properties:
+                message:
+                    type: "string"
+        User:
+            type: "object"
+            required: ["email", "first_name", "last_name"]
+            properties:
+                email:
+                    type: "string"
+                first_name:
+                    type: "string"
+                last_name:
+                    type: "string"
+        Reservation:
+            type: "object"
+            required: ["tickets", "event_id"]
+            properties:
+                id:
+                    type: string
+                event_id:
+                    type: string
+                tickets:
+                    type: array
+                    items:
+                        type: string
+                total_amount:
+                    type: number
+                date:
+                    type: string
+                    format: date-time
+        Ticket:
+            type: "object"
+            required: ["id", "event_id", "price"]
+            properties:
+                id:
+                    type: "string"
+                event_id:
+                    type: "string"
+                price:
+                    type: "number"
+        Event:
+            type: "object"
+            required: ["id", "name", "performer", "date", "venue", "location", "description"]
+            properties:
+                id:
+                    type: "string"
+                name:
+                    type: "string"
+                performer:
+                    type: "string"
+                date:
+                    type: "string"
+                    format: "date-time"
+                venue:
+                    type: "string"
+                location:
+                    type: "string"
+                description:
+                    type: "string"

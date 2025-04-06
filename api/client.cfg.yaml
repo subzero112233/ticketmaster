@@ -1,0 +1,5 @@
+package: api
+generate:
+  client: true
+  models: true
+output: ../../pkg/clients/ticketmaster/rest/client.gen.go

@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: ticketmaster
+Resources:
+Resources:
+  TicketTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ticket_locks
+      AttributeDefinitions:
+        - AttributeName: ticket_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ticket_id
+          KeyType: HASH  # REMOVE user_id as sort key!
+      BillingMode: PAY_PER_REQUEST
+      Tags:
+        - Key: Name
+          Value: ticket_locks
