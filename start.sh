@@ -5,6 +5,9 @@ set -e
 echo "starting docker-compose"
 docker-compose up --build -d
 
+echo "waiting for services to start"
+sleep 10
+
 echo "creating dynamodb table"
 aws --endpoint-url=http://localhost:4566 cloudformation create-stack --stack-name ticketmaster --template-body file://deploy/dynamodb.yaml --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_NAMED_IAM
 
