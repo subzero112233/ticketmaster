@@ -7,7 +7,7 @@ goal of focusing on 2 advanced techniques:
    This allows you to stream real-time incremental changes from an OLTP database (Postgres) to a Search Engine (ElasticSearch) and allow advanced search capabilities for events based on various criteria, such as date, location, and performer and most importantly, description.
 
 
-![Diagram](images/kafka-connect-architecture.png)
+![Diagram](images/ticketmaster.png)
 
 
 I used my own skeleton CLI https://github.com/skyhawk-security/goskeleton (with slight modifications) to generate a skeleton service with Clean Architecture, AWS Serverless deployment (which was discarded for this project) and more.
