@@ -13,7 +13,7 @@ sleep 10
 echo "creating dynamodb table"
 aws --endpoint-url=http://localhost:4566 cloudformation create-stack --stack-name ticketmaster --template-body file://deploy/dynamodb.yaml --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_NAMED_IAM
 
-echo "creating kafka connectors (make sure kafka-connect already started)"
+echo "creating postgres kafka connector"
 curl -XPOST --location 'http://localhost:8083/connectors' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
@@ -43,7 +43,7 @@ curl -XPOST --location 'http://localhost:8083/connectors' \
 }
 '
 
-echo "Creating fixed elasticsearch sink connector (using id as _id)..."
+echo "Creating elasticsearch kafka connector"
 
 curl -X POST http://localhost:8083/connectors \
 --header 'Content-Type: application/json' \
