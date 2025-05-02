@@ -41,32 +41,33 @@ curl -XPOST --location 'http://localhost:8083/connectors' \
 }
 '
 
-curl -X POST \
---location 'http://localhost:8083/connectors' \
+echo "Creating fixed elasticsearch sink connector (using id as _id)..."
+
+curl -X POST http://localhost:8083/connectors \
 --header 'Content-Type: application/json' \
 --data '{
-"name": "elasticsearch-sink-connector",
-"config": {
-"connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
-"tasks.max": "1",
-"topics": "events-table-topic.public.events",
-"key.ignore": "true",
-"connection.url": "http://elasticsearch:9200",
-"type.name": "_doc",
-"insert.mode": "upsert",
-"batch.size": "1000",
-"schema.ignore": "true",
-"value.converter": "org.apache.kafka.connect.json.JsonConverter",
-"value.converter.schemas.enable": "false",
-"flush.interval.ms": "10000",
-"retry.backoff.ms": "5000",
-"max.retries": "10",
-"batch.timeout.ms": "30000",
-"acks": "all",
-"transforms": "unwrap",
-"transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-"transforms.unwrap.drop.tombstones": "true",
-"transforms.unwrap.delete.handling.mode": "drop"
-}
-}
-'
+  "name": "elasticsearch-sink-connector",
+  "config": {
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "tasks.max": "1",
+    "topics": "events-table-topic.public.events",
+
+    "connection.url": "http://elasticsearch:9200",
+    "type.name": "_doc",
+    "key.ignore": "false",
+    "schema.ignore": "true",
+    "insert.mode": "upsert",
+
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+
+    "transforms": "unwrap,extractKey",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.drop.tombstones": "true",
+    "transforms.unwrap.delete.handling.mode": "drop",
+    "transforms.extractKey.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.extractKey.field": "id"
+  }
+}'
+
+
