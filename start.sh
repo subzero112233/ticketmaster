@@ -2,6 +2,8 @@
 
 set -e
 
+export AWS_PAGER=""
+
 echo "starting docker-compose"
 docker-compose up --build -d
 
@@ -51,16 +53,13 @@ curl -X POST http://localhost:8083/connectors \
     "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
     "tasks.max": "1",
     "topics": "events-table-topic.public.events",
-
     "connection.url": "http://elasticsearch:9200",
     "type.name": "_doc",
     "key.ignore": "false",
     "schema.ignore": "true",
     "insert.mode": "upsert",
-
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": "false",
-
     "transforms": "unwrap,extractKey",
     "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
     "transforms.unwrap.drop.tombstones": "true",
@@ -69,5 +68,3 @@ curl -X POST http://localhost:8083/connectors \
     "transforms.extractKey.field": "id"
   }
 }'
-
-
